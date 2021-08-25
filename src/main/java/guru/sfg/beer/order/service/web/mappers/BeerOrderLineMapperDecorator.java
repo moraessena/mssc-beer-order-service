@@ -25,4 +25,14 @@ public abstract class BeerOrderLineMapperDecorator implements BeerOrderLineMappe
                 });
         return orderLineDto;
     }
+
+    @Override
+    public BeerOrderLine dtoToBeerOrderLine(BeerOrderLineDto dto) {
+        BeerOrderLine beerOrderLine = beerOrderLineMapper.dtoToBeerOrderLine(dto);
+        beerServiceClient.getBeerByUPC(dto.getUpc()).ifPresent(beer -> {
+            beerOrderLine.setBeerId(beer.getId());
+            beerOrderLine.setUpc(beer.getUpc());
+        });
+        return beerOrderLine;
+    }
 }
